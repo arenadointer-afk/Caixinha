@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <title>Caixinhas</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="styles.css">
+  <link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#4b0082">
+</head>
+<body>
+
+<!-- 🔐 PIN -->
+<div id="lock" class="lock">
+  <h2>🔐 Desbloquear</h2>
+  <input type="password" id="pin" placeholder="Digite seu PIN">
+  <button onclick="desbloquear()">Entrar</button>
+</div>
+
+<div id="app" style="display:none">
+
+  <!-- TOPO -->
+  <div class="topo">
+    <div class="perfil">
+      <img id="fotoPerfil">
+      <input type="file" id="uploadFoto" accept="image/*" hidden>
+      <div>
+        <h3>Olá, sutello 👋</h3>
+        <small>Minhas caixinhas</small>
+      </div>
+    </div>
+  </div>
+
+  <!-- NOVA -->
+  <div class="nova">
+    <input id="nome" placeholder="Nome da caixinha">
+    <input id="valor" type="number" placeholder="Valor total">
+    <button onclick="criarCaixa()">➕ Criar caixinha</button>
+  </div>
+
+  <!-- LISTA -->
+  <div id="lista" class="lista"></div>
+
+</div>
+
+<!-- MENU DELETAR -->
+<div id="menuDelete" class="menu-delete">
+  <button onclick="confirmarDelete()">🗑️ Deletar</button>
+  <button onclick="fecharMenu()">Cancelar</button>
+</div>
+
+<!-- 🎉 -->
+<div id="confete" class="confete">🎆🎉 PARABÉNS! 🎉🎆</div>
+
+<script src="app.js"></script>
+</body>
+</html>
