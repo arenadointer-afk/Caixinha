@@ -2,55 +2,55 @@
 <html lang="pt-BR">
 <head>
   <meta charset="UTF-8">
-  <title>Caixinhas</title>
+  <title>Minhas Caixinhas</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link rel="stylesheet" href="styles.css">
-  <link rel="manifest" href="manifest.json">
-<meta name="theme-color" content="#4b0082">
+  <meta name="theme-color" content="#4b0082">
 </head>
 <body>
 
-<!-- 🔐 PIN -->
 <div id="lock" class="lock">
-  <h2>🔐 Desbloquear</h2>
-  <input type="password" id="pin" placeholder="Digite seu PIN">
-  <button onclick="desbloquear()">Entrar</button>
+  <h2 id="tituloLock">🔐 Bem-vindo</h2>
+  <p id="msgLock" style="margin-bottom:15px; opacity:0.8">Crie uma senha de acesso</p>
+  
+  <input type="number" id="pinInput" placeholder="Digite a senha (4 dígitos)" pattern="\d*">
+  <button onclick="verificarPin()" id="btnLock">Criar Senha</button>
+  
+  <p id="erroPin" style="color:#ff4444; display:none; margin-top:10px">Senha incorreta!</p>
 </div>
 
 <div id="app" style="display:none">
 
-  <!-- TOPO -->
   <div class="topo">
     <div class="perfil">
-      <img id="fotoPerfil">
+      <img id="fotoPerfil" src="https://via.placeholder.com/50" alt="Perfil">
       <input type="file" id="uploadFoto" accept="image/*" hidden>
       <div>
-        <h3>Olá, sutello 👋</h3>
-        <small>Minhas caixinhas</small>
+        <h3 id="saudacao">Olá, Economista 👋</h3>
+        <div class="global-info">
+            💰 Guardado Total: <span id="totalGlobal">R$ 0</span>
+        </div>
       </div>
     </div>
+    <button onclick="logout()" class="btn-logout">Sair</button>
   </div>
 
-  <!-- NOVA -->
-  <div class="nova">
-    <input id="nome" placeholder="Nome da caixinha">
-    <input id="valor" type="number" placeholder="Valor total">
-    <button onclick="criarCaixa()">➕ Criar caixinha</button>
+  <div class="nova nao-imprimir">
+    <input id="nome" placeholder="Nome do objetivo (ex: Viagem)">
+    <input id="valor" type="number" placeholder="Valor total (ex: 1000)">
+    <button onclick="criarCaixa()">➕ Criar nova caixinha</button>
   </div>
 
-  <!-- LISTA -->
   <div id="lista" class="lista"></div>
 
 </div>
 
-<!-- MENU DELETAR -->
-<div id="menuDelete" class="menu-delete">
-  <button onclick="confirmarDelete()">🗑️ Deletar</button>
-  <button onclick="fecharMenu()">Cancelar</button>
+<div id="confete" class="confete">
+    <div>
+        <h1>🎆 PARABÉNS! 🎆</h1>
+        <p>Meta atingida com sucesso!</p>
+    </div>
 </div>
-
-<!-- 🎉 -->
-<div id="confete" class="confete">🎆🎉 PARABÉNS! 🎉🎆</div>
 
 <script src="app.js"></script>
 </body>

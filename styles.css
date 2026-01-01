@@ -2,19 +2,44 @@
 
 body {
   margin: 0;
-  font-family: Arial, sans-serif;
+  font-family: 'Segoe UI', Arial, sans-serif;
   background: #0f0f14;
   color: white;
+  padding-bottom: 40px; /* Espaço para scroll */
 }
 
-/* PIN */
+/* LOCK SCREEN */
 .lock {
   height: 100vh;
-  background: linear-gradient(135deg,#7b2ff7,#a445f7);
+  background: linear-gradient(135deg, #4b0082, #240046);
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
+  padding: 20px;
+  text-align: center;
+}
+
+.lock input {
+  font-size: 20px;
+  text-align: center;
+  letter-spacing: 5px;
+  padding: 15px;
+  border-radius: 12px;
+  border: none;
+  width: 200px;
+  margin-bottom: 15px;
+}
+
+.lock button {
+  background: #00e676;
+  color: #003300;
+  font-weight: bold;
+  padding: 12px 30px;
+  border: none;
+  border-radius: 25px;
+  font-size: 16px;
+  cursor: pointer;
 }
 
 /* TOPO */
@@ -22,143 +47,296 @@ body {
   background: linear-gradient(135deg,#7b2ff7,#a445f7);
   padding: 20px;
   border-radius: 0 0 25px 25px;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.3);
 }
 
 .perfil {
   display: flex;
-  gap: 12px;
+  gap: 15px;
   align-items: center;
 }
 
 .perfil img {
-  width: 50px;
-  height: 50px;
+  width: 60px;
+  height: 60px;
   border-radius: 50%;
   background: #333;
+  object-fit: cover;
+  border: 3px solid white;
   cursor: pointer;
 }
 
-/* NOVA */
+.global-info {
+    font-size: 14px;
+    background: rgba(0,0,0,0.2);
+    padding: 4px 10px;
+    border-radius: 12px;
+    margin-top: 5px;
+}
+
+.btn-logout {
+    background: rgba(255,255,255,0.2);
+    border: none;
+    color: white;
+    padding: 5px 10px;
+    border-radius: 8px;
+    font-size: 12px;
+}
+
+/* INPUTS */
 .nova {
-  padding: 15px;
+  padding: 20px;
 }
 
 .nova input, .nova button {
   width: 100%;
-  padding: 10px;
-  margin-bottom: 8px;
-  border-radius: 10px;
+  padding: 12px;
+  margin-bottom: 10px;
+  border-radius: 12px;
   border: none;
+  font-size: 16px;
+}
+
+.nova button {
+  background: #7b2ff7;
+  color: white;
+  font-weight: bold;
 }
 
 /* LISTA */
 .lista {
-  padding: 10px;
-}
-
-/* CAIXA MADEIRA */
-.caixa {
-  background: linear-gradient(135deg,#c89b6d,#a9794b);
-  border-radius: 16px;
   padding: 15px;
-  margin-bottom: 15px;
+}
+
+/* CARD DA CAIXA */
+.caixa {
+  background: linear-gradient(135deg, #2d2d3a, #1f1f26);
+  border-radius: 16px;
+  padding: 20px;
+  margin-bottom: 20px;
+  box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+  position: relative;
+  border: 1px solid #333;
+}
+
+/* Estilo madeira apenas para quando aberta ou detalhe */
+.caixa-aberta-bg {
+  background: linear-gradient(135deg,#c89b6d,#a9794b);
   color: #3b220f;
-  box-shadow: inset 0 0 0 2px #8b5a2b,
-              0 10px 25px rgba(0,0,0,.4);
+  box-shadow: inset 0 0 0 2px #8b5a2b, 0 10px 25px rgba(0,0,0,.4);
 }
 
-.caixa.fechada {
-  opacity: .95;
+/* BARRA DE PROGRESSO */
+.barra-fundo {
+  background: rgba(0,0,0,0.3);
+  height: 12px;
+  border-radius: 6px;
+  margin: 10px 0;
+  overflow: hidden;
 }
 
-/* VALORES */
+.barra-nivel {
+  height: 100%;
+  background: #00e676;
+  transition: width 0.5s ease;
+}
+
+/* VALORES GRID */
 .valores {
   display: grid;
-  grid-template-columns: repeat(6,1fr);
-  gap: 6px;
-  margin-top: 12px;
+  grid-template-columns: repeat(auto-fill, minmax(60px, 1fr));
+  gap: 8px;
+  margin-top: 20px;
 }
 
 .valor {
-  background: rgba(255,255,255,.35);
-  padding: 10px;
+  background: rgba(255,255,255,0.4);
+  padding: 12px 5px;
   border-radius: 8px;
   text-align: center;
-  position: relative;
   font-weight: bold;
+  font-size: 14px;
+  cursor: pointer;
+  position: relative;
+  transition: all 0.2s;
+  user-select: none;
+}
+
+.caixa-aberta-bg .valor {
+    color: #3b220f;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.valor.marcado {
+  background: #00c853; /* Verde Sucesso */
+  color: white;
+  transform: scale(0.95);
+  box-shadow: inset 0 2px 4px rgba(0,0,0,0.2);
 }
 
 .valor.marcado::after {
-  content: "❌";
-  position: absolute;
-  top: -6px;
-  right: -6px;
+  content: "✔";
+  font-size: 12px;
+  display: block;
 }
 
-/* MENU DELETE */
-.menu-delete {
-  position: fixed;
-  bottom: 20px;
-  left: 50%;
-  transform: translateX(-50%);
-  background: #1c1c26;
-  padding: 15px;
-  border-radius: 16px;
-  display: none;
-  gap: 10px;
-  z-index: 999;
+/* BOTOES ACAO */
+.acoes {
+    display: flex;
+    gap: 10px;
+    margin-top: 15px;
 }
 
-.menu-delete button {
-  padding: 10px;
-  border-radius: 10px;
-  border: none;
+.btn-acao {
+    flex: 1;
+    padding: 10px;
+    border-radius: 8px;
+    border: none;
+    font-weight: 600;
+    cursor: pointer;
+    color: white;
 }
+
+.btn-voltar { background: #333; }
+.btn-whats { background: #25D366; }
+.btn-pdf { background: #FF5722; }
+.btn-delete { background: #ff1744; width: 40px; flex: none;}
 
 /* CONFETE */
 .confete {
   position: fixed;
   inset: 0;
   display: none;
-  background: rgba(0,0,0,.85);
+  background: rgba(0,0,0,.9);
   align-items: center;
   justify-content: center;
-  font-size: 28px;
-  z-index: 1000;
+  text-align: center;
+  z-index: 2000;
 }
+
+/* PRINT SETUP */
+@media print {
+    body { background: white; color: black; }
+    .lock, .topo, .nova, .nao-imprimir, .acoes, .btn-logout { display: none !important; }
+    .lista { padding: 0; }
+    .caixa { 
+        break-inside: avoid; 
+        box-shadow: none; 
+        border: 1px solid #ccc; 
+        background: white !important; 
+        color: black !important;
+    }
+    .valores { display: grid; grid-template-columns: repeat(6, 1fr); }
+    .valor { border: 1px solid #000; background: white !important; color: black !important; }
+    .valor.marcado { background: #ddd !important; }
+    .valor.marcado::after { content: "X"; color: black; }
+}
+/* BASE DO CARD DE VALOR */
 .valor {
   position: relative;
-  background: #d6b58a;
-  border-radius: 10px;
-  padding: 14px 0;
+  /* Textura de papel moeda (linhas finas) */
+  background-image: repeating-linear-gradient(
+    45deg,
+    rgba(255,255,255,0.15) 0px,
+    rgba(255,255,255,0.15) 1px,
+    transparent 1px,
+    transparent 4px
+  );
+  /* Cor base padrão caso falhe o gradiente */
+  background-color: #ddd; 
+  
+  color: #333;
+  padding: 16px 4px;
+  border-radius: 6px;
   text-align: center;
-  font-weight: bold;
-  font-size: 15px;
-  cursor: pointer;
-  box-shadow: inset 0 0 4px rgba(0,0,0,.4);
-}
-
-.valor.marcado {
-  background: #b09063;
-}
-
-.valor.marcado::after {
-  content: "✖";
-  position: absolute;
-  inset: 0;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 28px;
-  color: #3b220f;
+  font-family: 'Courier New', monospace; /* Fonte monoespaçada lembra impressora fiscal/dinheiro */
   font-weight: 900;
+  font-size: 18px;
+  cursor: pointer;
+  user-select: none;
+  
+  /* Borda dupla para parecer selo */
+  border: 2px solid rgba(0,0,0,0.2);
+  outline: 1px dashed rgba(255,255,255,0.4);
+  outline-offset: -5px;
+  
+  box-shadow: 0 3px 5px rgba(0,0,0,0.2);
+  transition: transform 0.1s, filter 0.1s;
 }
-.btn-share {
-  flex:1;
-  padding:10px;
-  border-radius:12px;
-  border:none;
-  background:#5b2d8b;
-  color:white;
-  font-weight:600;
+
+.valor:active {
+    transform: scale(0.95);
+}
+
+/* --- CORES ESPECÍFICAS COM GRADIENTES --- */
+
+/* R$ 10 (Vermelho/Rosa) */
+.valor.nota-10 {
+    background-color: #bf360c; /* fallback */
+    background: repeating-linear-gradient(45deg, rgba(255,255,255,0.1) 0px, rgba(255,255,255,0.1) 1px, transparent 1px, transparent 3px),
+                linear-gradient(135deg, #ff8a65, #d84315);
+    color: white;
+    text-shadow: 1px 1px 0 #bf360c;
+}
+
+/* R$ 20 (Amarelo/Ouro) */
+.valor.nota-20 {
+    background-color: #fbc02d;
+    background: repeating-linear-gradient(45deg, rgba(255,255,255,0.2) 0px, rgba(255,255,255,0.2) 1px, transparent 1px, transparent 3px),
+                linear-gradient(135deg, #fdd835, #f9a825);
+    color: #3e2723;
+    text-shadow: 0px 1px 0 rgba(255,255,255,0.4);
+}
+
+/* R$ 50 (Marrom/Café) */
+.valor.nota-50 {
+    background-color: #8d6e63;
+    background: repeating-linear-gradient(45deg, rgba(255,255,255,0.1) 0px, rgba(255,255,255,0.1) 1px, transparent 1px, transparent 3px),
+                linear-gradient(135deg, #a1887f, #5d4037);
+    color: white;
+    text-shadow: 1px 1px 0 #3e2723;
+}
+
+/* R$ 100 (Azul Turquesa) */
+.valor.nota-100 {
+    background-color: #039be5;
+    background: repeating-linear-gradient(45deg, rgba(255,255,255,0.1) 0px, rgba(255,255,255,0.1) 1px, transparent 1px, transparent 3px),
+                linear-gradient(135deg, #4fc3f7, #0277bd);
+    color: white;
+    text-shadow: 1px 1px 0 #01579b;
+}
+
+/* R$ 200 (Cinza Lobo-Guará) */
+.valor.nota-200 {
+    background-color: #90a4ae;
+    background: repeating-linear-gradient(45deg, rgba(255,255,255,0.1) 0px, rgba(255,255,255,0.1) 1px, transparent 1px, transparent 3px),
+                linear-gradient(135deg, #cfd8dc, #607d8b);
+    color: #263238;
+    text-shadow: 0px 1px 0 rgba(255,255,255,0.5);
+}
+
+/* VALOR PAGO (Carimbo Verde) */
+.valor.marcado {
+    background: #2e7d32 !important; /* Verde escuro */
+    opacity: 0.7;
+    color: #a5d6a7 !important;
+    box-shadow: inset 0 3px 10px rgba(0,0,0,0.5);
+    border: 2px solid #1b5e20;
+    text-decoration: line-through;
+    text-shadow: none;
+    outline: none;
+}
+.valor.marcado::after {
+    content: "PAGO";
+    position: absolute;
+    top: 50%; left: 50%;
+    transform: translate(-50%, -50%) rotate(-15deg);
+    font-size: 12px;
+    color: rgba(255,255,255,0.3);
+    border: 2px solid rgba(255,255,255,0.3);
+    padding: 2px 5px;
+    border-radius: 4px;
 }
