@@ -6,6 +6,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link rel="stylesheet" href="styles.css">
   <meta name="theme-color" content="#4b0082">
+  <link rel="manifest" href="/Caixinha/manifest.json">
+<meta name="theme-color" content="#4b0082">
 </head>
 <body>
 
@@ -51,7 +53,13 @@
         <p>Meta atingida com sucesso!</p>
     </div>
 </div>
-
+<script>
+  if ("serviceWorker" in navigator) {
+    window.addEventListener("load", () => {
+      navigator.serviceWorker.register("/Caixinha/sw.js");
+    });
+  }
+</script>
 <script src="app.js"></script>
 </body>
 </html>
