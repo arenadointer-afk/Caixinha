@@ -2,23 +2,30 @@
 <html lang="pt-BR">
 <head>
   <meta charset="UTF-8">
-  <title>Minhas Caixinhas</title>
+  <title>Caixinha</title>
+
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
   <link rel="stylesheet" href="styles.css">
-  <meta name="theme-color" content="#4b0082">
+
   <link rel="manifest" href="/Caixinha/manifest.json">
-<meta name="theme-color" content="#4b0082">
+  <meta name="theme-color" content="#4b0082">
 </head>
+
 <body>
 
 <div id="lock" class="lock">
   <h2 id="tituloLock">🔐 Bem-vindo</h2>
-  <p id="msgLock" style="margin-bottom:15px; opacity:0.8">Crie uma senha de acesso</p>
-  
+  <p id="msgLock" style="margin-bottom:15px; opacity:0.8">
+    Crie uma senha de acesso
+  </p>
+
   <input type="number" id="pinInput" placeholder="Digite a senha (4 dígitos)" pattern="\d*">
   <button onclick="verificarPin()" id="btnLock">Criar Senha</button>
-  
-  <p id="erroPin" style="color:#ff4444; display:none; margin-top:10px">Senha incorreta!</p>
+
+  <p id="erroPin" style="color:#ff4444; display:none; margin-top:10px">
+    Senha incorreta!
+  </p>
 </div>
 
 <div id="app" style="display:none">
@@ -30,7 +37,7 @@
       <div>
         <h3 id="saudacao">Olá, Economista 👋</h3>
         <div class="global-info">
-            💰 Guardado Total: <span id="totalGlobal">R$ 0</span>
+          💰 Guardado Total: <span id="totalGlobal">R$ 0</span>
         </div>
       </div>
     </div>
@@ -48,11 +55,12 @@
 </div>
 
 <div id="confete" class="confete">
-    <div>
-        <h1>🎆 PARABÉNS! 🎆</h1>
-        <p>Meta atingida com sucesso!</p>
-    </div>
+  <div>
+    <h1>🎆 PARABÉNS! 🎆</h1>
+    <p>Meta atingida com sucesso!</p>
+  </div>
 </div>
+
 <script>
   if ("serviceWorker" in navigator) {
     window.addEventListener("load", () => {
@@ -60,6 +68,7 @@
     });
   }
 </script>
+
 <script src="app.js"></script>
 </body>
 </html>
