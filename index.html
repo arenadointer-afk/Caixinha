@@ -2,72 +2,130 @@
 <html lang="pt-BR">
 <head>
   <meta charset="UTF-8">
-  <title>Caixinha</title>
-
+  <title>Minhas Finanças Pro</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
   <link rel="stylesheet" href="styles.css">
-
-  <link rel="manifest" href="/Caixinha/manifest.json">
   <meta name="theme-color" content="#4b0082">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
-
 <body>
 
 <div id="lock" class="lock">
   <h2 id="tituloLock">🔐 Bem-vindo</h2>
-  <p id="msgLock" style="margin-bottom:15px; opacity:0.8">
-    Crie uma senha de acesso
-  </p>
-
-  <input type="number" id="pinInput" placeholder="Digite a senha (4 dígitos)" pattern="\d*">
-  <button onclick="verificarPin()" id="btnLock">Criar Senha</button>
-
-  <p id="erroPin" style="color:#ff4444; display:none; margin-top:10px">
-    Senha incorreta!
-  </p>
+  <p id="msgLock" style="margin-bottom:15px; opacity:0.8">Crie uma senha de acesso</p>
+  <input type="number" id="pinInput" placeholder="Senha (4 dígitos)" pattern="\d*">
+  <button onclick="verificarPin()" id="btnLock">Acessar</button>
+  <p id="erroPin" style="color:#ff4444; display:none; margin-top:10px">Senha incorreta!</p>
 </div>
 
-<div id="app" style="display:none">
+<div id="mainContainer" style="display:none">
 
-  <div class="topo">
-    <div class="perfil">
-      <img id="fotoPerfil" src="https://via.placeholder.com/50" alt="Perfil">
-      <input type="file" id="uploadFoto" accept="image/*" hidden>
-      <div>
-        <h3 id="saudacao">Olá, Economista 👋</h3>
-        <div class="global-info">
-          💰 Guardado Total: <span id="totalGlobal">R$ 0</span>
+    <div id="app" class="tab-content active">
+        <div class="topo">
+            <div class="perfil">
+            <img id="fotoPerfil" src="https://via.placeholder.com/50" alt="Perfil">
+            <input type="file" id="uploadFoto" accept="image/*" hidden>
+            <div>
+                <h3 id="saudacao">Olá, Economista 👋</h3>
+                <div class="global-info">
+                    💰 Guardado Total: <span id="totalGlobal">R$ 0</span>
+                </div>
+            </div>
+            </div>
+            <button onclick="logout()" class="btn-logout">Sair</button>
         </div>
-      </div>
+
+        <div class="nova nao-imprimir">
+            <input id="nome" placeholder="Nome do objetivo (ex: Viagem)">
+            <input id="valor" type="number" placeholder="Valor total (ex: 1000)">
+            <button onclick="criarCaixa()">➕ Criar nova caixinha</button>
+        </div>
+
+        <div id="lista" class="lista"></div>
     </div>
-    <button onclick="logout()" class="btn-logout">Sair</button>
-  </div>
 
-  <div class="nova nao-imprimir">
-    <input id="nome" placeholder="Nome do objetivo (ex: Viagem)">
-    <input id="valor" type="number" placeholder="Valor total (ex: 1000)">
-    <button onclick="criarCaixa()">➕ Criar nova caixinha</button>
-  </div>
+    <div id="analise" class="tab-content" style="display:none">
+        <div class="topo topo-analise">
+            <h3>📊 Dashboard Pro</h3>
+            <button onclick="logout()" class="btn-logout">Sair</button>
+        </div>
 
-  <div id="lista" class="lista"></div>
+        <div class="container-analise">
+            
+            <div class="card-painel score-card">
+                <div class="score-circle" id="scoreCircle">
+                    <span id="scoreValue">--</span>
+                    <small>Score</small>
+                </div>
+                <div class="score-info">
+                    <h4 id="scoreTitle">Analisando...</h4>
+                    <p id="scoreDesc">Importe dados para ver sua saúde financeira.</p>
+                </div>
+            </div>
+
+            <div class="card-painel">
+                <label>📅 Selecione o Período</label>
+                <select id="selectMes" onchange="alterarMesVisualizacao()" style="width:100%; padding:10px; margin-bottom:15px; border-radius:8px; border:none;">
+                    <option value="todos">Visão Geral (Todos os Meses)</option>
+                </select>
+
+                <label id="labelRenda">💵 Renda deste Mês (R$)</label>
+                <input type="number" id="inputRenda" placeholder="Digite a renda deste mês..." onchange="salvarRendaMes()">
+                
+                <div style="margin-top:15px; border-top:1px solid #444; padding-top:10px">
+                    <label style="font-size:12px; color:#aaa;">📂 Backup / Importação</label>
+                    <input type="file" id="fileInput" accept=".json" onchange="importarJson(this)" style="font-size:12px">
+                </div>
+            </div>
+
+            <div id="comparativoBox" class="card-painel" style="display:none; background: linear-gradient(135deg, #37474f, #263238);">
+                <h4 style="margin:0 0 5px 0">🆚 Comparativo</h4>
+                <p id="textoComparativo" style="font-size:14px; margin:0"></p>
+            </div>
+
+            <div class="card-grafico">
+                <h4 style="text-align:center; color:#aaa">Histórico: Entradas vs Saídas</h4>
+                <canvas id="graficoGastos"></canvas>
+            </div>
+
+            <div class="card-grafico">
+                <h4 style="text-align:center; color:#aaa">Categorias</h4>
+                <canvas id="graficoPizza"></canvas>
+            </div>
+
+            <div class="ai-box" id="aiBox" style="display:none">
+                <div class="ai-header">🤖 Insights Inteligentes</div>
+                <div id="aiContent"></div>
+            </div>
+
+            <h4 style="margin:20px 0 10px 0; color:#aaa">Extrato Detalhado</h4>
+            <div id="listaContas" class="lista-contas"></div>
+            
+            <button class="fab" onclick="abrirModalGasto()">+</button>
+        </div>
+    </div>
+
+    <div class="bottom-nav nao-imprimir">
+        <button class="nav-btn active" onclick="mudarAba('app', this)">📦 Caixinhas</button>
+        <button class="nav-btn" onclick="mudarAba('analise', this)">📊 Dashboard</button>
+    </div>
 
 </div>
 
-<div id="confete" class="confete">
-  <div>
-    <h1>🎆 PARABÉNS! 🎆</h1>
-    <p>Meta atingida com sucesso!</p>
-  </div>
+<div id="modalGasto" class="modal-overlay" style="display:none">
+    <div class="modal-card">
+        <h3>💸 Novo Gasto</h3>
+        <input id="novoGastoNome" placeholder="Nome (ex: Padaria)">
+        <input id="novoGastoValor" type="number" placeholder="Valor (R$)">
+        <input id="novoGastoData" type="date">
+        <div style="display:flex; gap:10px; margin-top:15px">
+            <button onclick="fecharModalGasto()" class="btn-cancelar">Cancelar</button>
+            <button onclick="salvarNovoGasto()" class="btn-salvar">Salvar</button>
+        </div>
+    </div>
 </div>
 
-<script>
-  if ("serviceWorker" in navigator) {
-    window.addEventListener("load", () => {
-      navigator.serviceWorker.register("/Caixinha/sw.js");
-    });
-  }
-</script>
+<div id="confete" class="confete"><div><h1>🎆 PARABÉNS! 🎆</h1><p>Meta atingida!</p></div></div>
 
 <script src="app.js"></script>
 </body>
