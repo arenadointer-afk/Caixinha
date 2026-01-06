@@ -1,4 +1,4 @@
-const CACHE = "caixinha-v1";
+const CACHE = "caixinha-v2";
 
 const FILES = [
   "/Caixinha/",
