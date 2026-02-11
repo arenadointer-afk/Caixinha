@@ -1,4 +1,4 @@
-const CACHE_NAME = "financas-agenda-v2";
+const CACHE_NAME = "agendaapp-v2";
 const ASSETS = [
   "./",
   "./index.html",
