@@ -2,14 +2,18 @@
 <html lang="pt-BR">
 <head>
   <meta charset="UTF-8">
-  <title>Finanças & Agenda Pro</title>
+  <title>Finanças & Agenda</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-  <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="style.css">
+  
+  <link rel="manifest" href="manifest.json">
+  <link rel="icon" type="image/png" href="icon-192.png"> 
   <meta name="theme-color" content="#4b0082">
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.28/jspdf.plugin.autotable.min.js"></script>
 </head>
+
 <body>
 
 <div id="lock" class="lock">
@@ -62,7 +66,7 @@
 
         <div class="sub-nav">
             <button id="subTabCompromissos" class="sub-btn active" onclick="mudarSubAba('compromissos')">📆 Compromissos</button>
-            <button id="subTabNotas" class="sub-btn" onclick="mudarSubAba('notas')">📝 Anotações</button>
+            <button id="subTabNotas" class="sub-btn" onclick="mudarSubAba('notas')">📝 Notas</button>
         </div>
 
         <div id="viewCompromissos" class="view-agenda">
@@ -112,5 +116,17 @@
 </div>
 
 <script src="app.js"></script>
+<script src="app.js"></script>
+
+<script>
+    if ('serviceWorker' in navigator) {
+        navigator.serviceWorker.register('./service-worker.js')
+        .then(() => console.log('App Instalável Ativo!'))
+        .catch(err => console.error('Erro PWA:', err));
+    }
+</script>
+</body>
+</html>
+
 </body>
 </html>
