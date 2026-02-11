@@ -2,7 +2,7 @@ const CACHE_NAME = "agendaapp-v2";
 const ASSETS = [
   "./",
   "./index.html",
-  "./style.css",
+  "./styles.css",
   "./app.js",
   "./manifest.json",
   "./icon-192.png",
