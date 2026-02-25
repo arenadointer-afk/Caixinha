@@ -1,4 +1,4 @@
-const CACHE_NAME = "Sutello-agenda-v1";
+const CACHE_NAME = "Agenda-V1";
 const ASSETS = [
   "./",
   "./index.html",
