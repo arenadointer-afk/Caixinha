@@ -8,7 +8,6 @@ const firebaseConfig = {
     appId: "1:460447549653:web:a36b0c7d2c2919ff633a5c"
 };
 
-// Inicializa o Firebase
 firebase.initializeApp(firebaseConfig);
 const auth = firebase.auth();
 const db = firebase.firestore();
@@ -30,7 +29,7 @@ const ui = {
     confete: document.getElementById('confete')
 };
 
-/* ================= 2. AUTENTICAÇÃO E SINCRONIZAÇÃO ================= */
+/* ================= 2. AUTENTICAÇÃO, BIOMETRIA E NUVEM ================= */
 function fazerLoginFirebase() {
     const email = document.getElementById("loginEmail").value;
     const senha = document.getElementById("loginSenha").value;
@@ -38,6 +37,11 @@ function fazerLoginFirebase() {
     if (!email || !senha) return alert("Preencha o e-mail e a senha!");
 
     auth.signInWithEmailAndPassword(email, senha)
+        .then(() => {
+            // Salva no celular que a pessoa já logou com senha uma vez, ativando a digital pras próximas
+            localStorage.setItem('biometriaAtiva_Agenda', 'true');
+            entrarNoApp();
+        })
         .catch((error) => alert("E-mail ou senha incorretos!"));
 }
 
@@ -47,12 +51,15 @@ function logout() {
 
 auth.onAuthStateChanged(function(user) {
     if (user) {
-        // Logado: Mostra o app e esconde o login
-        ui.lock.style.display = 'none';
-        ui.mainContainer.style.display = 'block';
-        carregarFoto();
+        // Esconde campos de login
+        document.getElementById("loginEmail").style.display = "none";
+        document.getElementById("loginSenha").style.display = "none";
+        document.getElementById("btnEntrar").style.display = "none";
+        
+        // Mostra botão de biometria
+        document.getElementById("btnBiometria").style.display = "block";
 
-        // Conecta na nuvem em tempo real (GAVETA SEPARADA: dados_caixinhas_agenda)
+        // Conecta na nuvem em tempo real (dados_caixinhas_agenda)
         db.collection("dados_caixinhas_agenda").doc(user.uid)
           .onSnapshot(function(doc) {
               if (doc.exists) {
@@ -68,15 +75,37 @@ auth.onAuthStateChanged(function(user) {
               }
           });
           verificarLembretes();
+
+          // Lógica da Biometria
+          if (localStorage.getItem('biometriaAtiva_Agenda') === 'true') {
+              // Mantém tela de bloqueio e pede a digital
+              ui.lock.style.display = 'flex';
+              ui.mainContainer.style.display = 'none';
+              tentarAutoLogin();
+          } else {
+              entrarNoApp();
+          }
+
     } else {
-        // Deslogado: Mostra tela de login
+        // Ninguém logado, mostra tela normal de e-mail e senha
         ui.lock.style.display = 'flex';
         ui.mainContainer.style.display = 'none';
+        document.getElementById("loginEmail").style.display = "block";
+        document.getElementById("loginSenha").style.display = "block";
+        document.getElementById("btnEntrar").style.display = "block";
+        document.getElementById("btnBiometria").style.display = "none";
     }
 });
 
+function entrarNoApp() {
+    ui.lock.style.display = 'none';
+    ui.mainContainer.style.display = 'block';
+    carregarFoto();
+    renderCaixinhas();
+    renderAgenda();
+}
+
 function salvarNuvem() {
-    // Salva local por segurança e envia pra nuvem
     if (auth.currentUser) {
         db.collection("dados_caixinhas_agenda").doc(auth.currentUser.uid).set({
             caixas: caixas,
@@ -86,7 +115,38 @@ function salvarNuvem() {
     }
 }
 
-/* FOTO (Mantido local para cada aparelho) */
+/* LÓGICA DE BIOMETRIA */
+async function tentarAutoLogin() {
+    if (window.PublicKeyCredential) {
+        try {
+            const available = await window.PublicKeyCredential.isUserVerifyingPlatformAuthenticatorAvailable();
+            if (available) {
+                acaoBotaoBiometria();
+            }
+        } catch (e) {
+            console.log("Biometria não disponível");
+        }
+    }
+}
+
+async function acaoBotaoBiometria() {
+    try {
+        const publicKeyCredentialRequestOptions = { challenge: new Uint8Array(32), userVerification: "required" };
+        const assertion = await navigator.credentials.get({ publicKey: publicKeyCredentialRequestOptions });
+        
+        if (assertion) {
+            entrarNoApp();
+        }
+    } catch (e) {
+        console.error("Biometria cancelada:", e);
+        // Se cancelar a digital, mostra os campos de senha de novo para a pessoa poder entrar
+        document.getElementById("loginEmail").style.display = "block";
+        document.getElementById("loginSenha").style.display = "block";
+        document.getElementById("btnEntrar").style.display = "block";
+    }
+}
+
+/* FOTO */
 ui.fotoPerfil.onclick = () => ui.uploadFoto.click();
 ui.uploadFoto.onchange = e => {
   const r = new FileReader();
@@ -185,7 +245,6 @@ function renderAgenda() {
         const mesRef = getMesAno(c.data);
         if(mesRef !== mesAtual) { listaComp.innerHTML += `<div class="mes-header">${mesRef}</div>`; mesAtual = mesRef; }
         
-        // NOVO: Verifica de quem é o compromisso para exibir na tela
         const txtDono = (c.dono && c.dono !== "Ambos") ? ` <span style="color:#7b2ff7; font-size:0.85em;">(${c.dono})</span>` : "";
 
         listaComp.innerHTML += `
@@ -224,14 +283,12 @@ function addAgenda() {
     const t = document.getElementById('agendaTitulo').value;
     const d = document.getElementById('agendaData').value;
     const h = document.getElementById('agendaHora').value;
-    const dono = document.getElementById('agendaDono').value; // PEGA O NOME DA PESSOA
+    const dono = document.getElementById('agendaDono').value;
 
     if(!t || !d || !h) return;
     
-    // Salva o compromisso com o nome da pessoa
     agenda.push({ id: Date.now(), titulo: t, data: d, hora: h, dono: dono });
     salvarNuvem();
-    
     fecharModais(); 
     document.getElementById('agendaTitulo').value = ""; 
 }

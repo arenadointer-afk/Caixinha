@@ -4,11 +4,12 @@
   <meta charset="UTF-8">
   <title>Finanças & Agenda</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-  <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="style.css">
   
   <link rel="manifest" href="manifest.json">
   <link rel="icon" type="image/png" href="icon-192.png"> 
-  <meta name="theme-color" content="#4b0082">  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <meta name="theme-color" content="#4b0082">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.28/jspdf.plugin.autotable.min.js"></script>
   
@@ -28,12 +29,15 @@
     <input type="email" id="loginEmail" placeholder="E-mail" style="width: 100%; padding: 15px; border-radius: 12px; border: 1px solid #444; background: #222; color: white; margin-bottom: 10px;">
     <input type="password" id="loginSenha" placeholder="Senha" style="width: 100%; padding: 15px; border-radius: 12px; border: 1px solid #444; background: #222; color: white; margin-bottom: 20px;">
     
-    <button onclick="fazerLoginFirebase()" style="width: 100%; background:#7b2ff7; color: white; border: none; padding: 15px; border-radius: 12px; font-weight: bold; margin-bottom: 15px; cursor: pointer;">
+    <button onclick="fazerLoginFirebase()" id="btnEntrar" style="width: 100%; background:#7b2ff7; color: white; border: none; padding: 15px; border-radius: 12px; font-weight: bold; margin-bottom: 15px; cursor: pointer;">
       ENTRAR
+    </button>
+    
+    <button onclick="acaoBotaoBiometria()" id="btnBiometria" style="width: 100%; background: rgba(255,255,255,0.1); color: white; border: 1px solid rgba(255,255,255,0.2); padding: 15px; border-radius: 12px; font-weight: bold; cursor: pointer; display: none;">
+      USAR BIOMETRIA
     </button>
   </div>
 </div>
-
 
 <div id="mainContainer" style="display:none">
 
@@ -64,12 +68,6 @@
             <div class="perfil">
                 <div>
                     <h3>📅 Agenda & Notas</h3>
-                    <div class="acoes-agenda">
-                        <button onclick="baixarBackupAgenda()" title="Backup">💾</button>
-                        <label for="inputBackupAgenda" title="Restaurar" style="cursor:pointer">📂</label>
-                        <input type="file" id="inputBackupAgenda" style="display:none" onchange="restaurarBackupAgenda(this)">
-                        <button onclick="gerarPDFAgenda()" title="PDF">📄</button>
-                    </div>
                 </div>
             </div>
             <button onclick="logout()" class="btn-logout">Sair</button>
@@ -109,11 +107,10 @@
             <input id="agendaHora" type="time" style="width: 100%;">
         </div>
         <select id="agendaDono" style="width: 100%; margin-top: 10px; padding: 10px; border-radius: 8px; background: #222; color: white; border: 1px solid #444;">
-            <option value="Ambos">Ambos</option>
+            <option value="Ambos">De quem é? (Ambos)</option>
             <option value="Leonardo">Leonardo</option>
             <option value="Vitórya">Vitórya</option>
         </select>
-        
         <div style="display:flex; gap:10px; margin-top:15px">
             <button onclick="fecharModais()" class="btn-cancelar">Cancelar</button>
             <button onclick="addAgenda()" class="btn-salvar">Agendar</button>
@@ -133,8 +130,6 @@
 </div>
 
 <script src="app.js"></script>
-<script src="app.js"></script>
-
 <script>
     if ('serviceWorker' in navigator) {
         navigator.serviceWorker.register('./service-worker.js')
@@ -142,8 +137,6 @@
         .catch(err => console.error('Erro PWA:', err));
     }
 </script>
-</body>
-</html>
 
 </body>
 </html>
