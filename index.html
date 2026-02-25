@@ -2,29 +2,38 @@
 <html lang="pt-BR">
 <head>
   <meta charset="UTF-8">
-  <title>Finanças & Agenda Pro</title>
+  <title>Finanças & Agenda</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-  
-  <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="style.css">
   
   <link rel="manifest" href="manifest.json">
   <link rel="icon" type="image/png" href="icon-192.png"> 
-  <meta name="theme-color" content="#4b0082">
-
-  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <meta name="theme-color" content="#4b0082">  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.28/jspdf.plugin.autotable.min.js"></script>
+  
+  <script src="https://www.gstatic.com/firebasejs/10.10.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.10.0/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.10.0/firebase-firestore-compat.js"></script>
 </head>
 
 <body>
 
-<div id="lock" class="lock">
-  <h2 id="tituloLock">🔐 Acesso Seguro</h2>
-  <p id="msgLock" style="margin-bottom:15px; opacity:0.8">Digite sua senha</p>
-  <input type="number" id="pinInput" placeholder="Senha (4 dígitos)" pattern="\d*">
-  <button onclick="verificarPin()" id="btnLock">Entrar</button>
-  <p id="erroPin" style="color:#ff4444; display:none; margin-top:10px">Senha incorreta!</p>
+<div id="lock" class="lock" style="background: #0f0f14; display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100vh;">
+  <div style="text-align:center; padding: 20px; max-width: 300px;">
+    <div style="font-size: 60px; margin-bottom: 20px;">🔐</div>
+    <h2 style="color:white; margin-bottom: 10px;">Acesso Restrito</h2>
+    <p style="color: #888; margin-bottom: 20px; font-size: 14px;">Faça login para sincronizar</p>
+    
+    <input type="email" id="loginEmail" placeholder="E-mail" style="width: 100%; padding: 15px; border-radius: 12px; border: 1px solid #444; background: #222; color: white; margin-bottom: 10px;">
+    <input type="password" id="loginSenha" placeholder="Senha" style="width: 100%; padding: 15px; border-radius: 12px; border: 1px solid #444; background: #222; color: white; margin-bottom: 20px;">
+    
+    <button onclick="fazerLoginFirebase()" style="width: 100%; background:#7b2ff7; color: white; border: none; padding: 15px; border-radius: 12px; font-weight: bold; margin-bottom: 15px; cursor: pointer;">
+      ENTRAR
+    </button>
+  </div>
 </div>
+
 
 <div id="mainContainer" style="display:none">
 
@@ -35,16 +44,16 @@
                 <input type="file" id="uploadFoto" accept="image/*" hidden>
                 <div>
                     <h3 id="saudacao">Olá, Economista 👋</h3>
-                    <div class="global-info">💰 Total: <span id="totalGlobal">R$ 0,00</span></div>
+                    <div class="global-info">💰 Total Guardado: <span id="totalGlobal">R$ 0,00</span></div>
                 </div>
             </div>
             <button onclick="logout()" class="btn-logout">Sair</button>
         </div>
 
         <div class="nova nao-imprimir">
-            <input id="nome" placeholder="Objetivo (ex: Carro)">
-            <input id="valor" type="number" placeholder="Valor (ex: 5000)">
-            <button onclick="criarCaixa()">➕ Criar</button>
+            <input id="nome" placeholder="Nome do objetivo (ex: Viagem)">
+            <input id="valor" type="number" placeholder="Valor total (ex: 1000)">
+            <button onclick="criarCaixa()">➕ Criar Caixinha</button>
         </div>
 
         <div id="lista" class="lista"></div>
@@ -94,11 +103,17 @@
 <div id="modalAgenda" class="modal-overlay" style="display:none">
     <div class="modal-card">
         <h3>Novo Compromisso</h3>
-        <input id="agendaTitulo" placeholder="Título">
-        <div style="display:flex; gap:10px">
-            <input id="agendaData" type="date">
-            <input id="agendaHora" type="time">
+        <input id="agendaTitulo" placeholder="Título (ex: Médico)">
+        <div style="display:flex; gap:10px; margin-top:10px;">
+            <input id="agendaData" type="date" style="width: 100%;">
+            <input id="agendaHora" type="time" style="width: 100%;">
         </div>
+        <select id="agendaDono" style="width: 100%; margin-top: 10px; padding: 10px; border-radius: 8px; background: #222; color: white; border: 1px solid #444;">
+            <option value="Ambos">Ambos</option>
+            <option value="Leonardo">Leonardo</option>
+            <option value="Vitórya">Vitórya</option>
+        </select>
+        
         <div style="display:flex; gap:10px; margin-top:15px">
             <button onclick="fecharModais()" class="btn-cancelar">Cancelar</button>
             <button onclick="addAgenda()" class="btn-salvar">Agendar</button>
@@ -118,14 +133,17 @@
 </div>
 
 <script src="app.js"></script>
+<script src="app.js"></script>
 
 <script>
     if ('serviceWorker' in navigator) {
         navigator.serviceWorker.register('./service-worker.js')
-        .then(() => console.log('App Pronto para Instalar!'))
+        .then(() => console.log('App Instalável Ativo!'))
         .catch(err => console.error('Erro PWA:', err));
     }
 </script>
 </body>
-          </html>
-          
+</html>
+
+</body>
+</html>
