@@ -1,6 +1,6 @@
 importScripts("https://cdn.onesignal.com/sdks/web/v16/OneSignalSDK.sw.js");
   
-const CACHE_NAME = "Agenda-1";
+const CACHE_NAME = "Agenda-2";
 const ASSETS = [
   "./",
   "./index.html",
