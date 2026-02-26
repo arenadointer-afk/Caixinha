@@ -1,3 +1,9 @@
+importScripts("https://cdn.onesignal.com/sdks/web/v16/OneSignalSDK.sw.js");
+
+const CACHE_NAME = "Agenda-V1";
+const ASSETS = [
+// ... o resto do seu código continua igualzinho para baixo ...
+  
 const CACHE_NAME = "Agenda-V1";
 const ASSETS = [
   "./",
