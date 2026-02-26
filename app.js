@@ -335,7 +335,7 @@ function agendarNativo(titulo, data, hora) {
     const fim = data.replace(/-/g, "") + "T" + (parseInt(hora.substring(0,2))+1).toString().padStart(2,'0') + hora.substring(3) + "00";
     if(confirm("Abrir calendário do celular?")) window.open(`https://www.google.com/calendar/render?action=TEMPLATE&text=${encodeURIComponent(titulo)}&dates=${inicio}/${fim}`, '_blank');
 }
-/* ================= 6. NOTIFICAÇÕES (ONESIGNAL) - MODO DETETIVE ================= */
+/* ================= 6. NOTIFICAÇÕES (ONESIGNAL) - MODO DETETIVE 2 ================= */
 async function enviarNotificacao(titulo, mensagem) {
     const appId = "9b555390-0b3d-448b-8461-2a7d79aec4b9";
     const restApiKey = "os_v2_app_tnkvhealhvcixbdbfj6xtlwexfbt6zc4yrmutu56e5jmeoqldsqw2sbfimmgq5lj7yugqyejqhormt2c6zowpg7qryfp25uwuo5a7xq"; 
@@ -345,11 +345,11 @@ async function enviarNotificacao(titulo, mensagem) {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
-            'Authorization': `Basic ${restApiKey}`
+            // MUDANÇA: Usando a palavra 'Key' para chaves V2
+            'Authorization': `Key ${restApiKey}`
         },
         body: JSON.stringify({
             app_id: appId,
-            // Atualizei o nome do grupo para o padrão mais recente do OneSignal
             included_segments: ["Total Subscriptions", "Subscribed Users"], 
             headings: { "en": titulo, "pt": titulo },
             contents: { "en": mensagem, "pt": mensagem }
@@ -357,7 +357,6 @@ async function enviarNotificacao(titulo, mensagem) {
     };
 
     try {
-        alert("🔎 Passo 1: Enviando aviso para a nuvem..."); 
         const resposta = await fetch("https://corsproxy.io/?" + encodeURIComponent(url), options);
         const dados = await resposta.json();
         
@@ -367,6 +366,7 @@ async function enviarNotificacao(titulo, mensagem) {
             alert("✅ Sucesso! O OneSignal aceitou. Entregue para: " + dados.recipients + " aparelho(s).");
         }
     } catch (e) {
-        alert("🚧 Erro de Conexão (Proxy): " + e.message);
+        alert("🚧 Erro de Conexão: " + e.message);
     }
 }
+
