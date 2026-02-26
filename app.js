@@ -335,18 +335,20 @@ function agendarNativo(titulo, data, hora) {
     const fim = data.replace(/-/g, "") + "T" + (parseInt(hora.substring(0,2))+1).toString().padStart(2,'0') + hora.substring(3) + "00";
     if(confirm("Abrir calendário do celular?")) window.open(`https://www.google.com/calendar/render?action=TEMPLATE&text=${encodeURIComponent(titulo)}&dates=${inicio}/${fim}`, '_blank');
 }
-/* ================= 6. NOTIFICAÇÕES (ONESIGNAL) - MODO DETETIVE 2 ================= */
+/* ================= 6. NOTIFICAÇÕES (ONESIGNAL) - MODO DETETIVE 3 ================= */
 async function enviarNotificacao(titulo, mensagem) {
     const appId = "9b555390-0b3d-448b-8461-2a7d79aec4b9";
-    const restApiKey = "os_v2_app_tnkvhealhvcixbdbfj6xtlwexfbt6zc4yrmutu56e5jmeoqldsqw2sbfimmgq5lj7yugqyejqhormt2c6zowpg7qryfp25uwuo5a7xq"; 
+    
+    // MUDANÇA 1: Cole aqui a sua LEGACY API KEY (A que NÃO começa com os_v2)
+    const restApiKey = "gntbk6tmiul7nok6jtk2rcdtz"; 
 
     const url = "https://onesignal.com/api/v1/notifications";
     const options = {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
-            // MUDANÇA: Usando a palavra 'Key' para chaves V2
-            'Authorization': `Key ${restApiKey}`
+            // MUDANÇA 2: Voltamos para a palavra 'Basic' que é o padrão da Legacy Key
+            'Authorization': `Basic ${restApiKey}`
         },
         body: JSON.stringify({
             app_id: appId,
@@ -369,4 +371,3 @@ async function enviarNotificacao(titulo, mensagem) {
         alert("🚧 Erro de Conexão: " + e.message);
     }
 }
-
