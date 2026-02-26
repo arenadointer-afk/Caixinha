@@ -38,7 +38,6 @@ function fazerLoginFirebase() {
 
     auth.signInWithEmailAndPassword(email, senha)
         .then(() => {
-            // Salva no celular que a pessoa já logou com senha uma vez, ativando a digital pras próximas
             localStorage.setItem('biometriaAtiva_Agenda', 'true');
             entrarNoApp();
         })
@@ -51,15 +50,11 @@ function logout() {
 
 auth.onAuthStateChanged(function(user) {
     if (user) {
-        // Esconde campos de login
         document.getElementById("loginEmail").style.display = "none";
         document.getElementById("loginSenha").style.display = "none";
         document.getElementById("btnEntrar").style.display = "none";
-        
-        // Mostra botão de biometria
         document.getElementById("btnBiometria").style.display = "block";
 
-        // Conecta na nuvem em tempo real (dados_caixinhas_agenda)
         db.collection("dados_caixinhas_agenda").doc(user.uid)
           .onSnapshot(function(doc) {
               if (doc.exists) {
@@ -76,9 +71,7 @@ auth.onAuthStateChanged(function(user) {
           });
           verificarLembretes();
 
-          // Lógica da Biometria
           if (localStorage.getItem('biometriaAtiva_Agenda') === 'true') {
-              // Mantém tela de bloqueio e pede a digital
               ui.lock.style.display = 'flex';
               ui.mainContainer.style.display = 'none';
               tentarAutoLogin();
@@ -87,7 +80,6 @@ auth.onAuthStateChanged(function(user) {
           }
 
     } else {
-        // Ninguém logado, mostra tela normal de e-mail e senha
         ui.lock.style.display = 'flex';
         ui.mainContainer.style.display = 'none';
         document.getElementById("loginEmail").style.display = "block";
@@ -133,13 +125,9 @@ async function acaoBotaoBiometria() {
     try {
         const publicKeyCredentialRequestOptions = { challenge: new Uint8Array(32), userVerification: "required" };
         const assertion = await navigator.credentials.get({ publicKey: publicKeyCredentialRequestOptions });
-        
-        if (assertion) {
-            entrarNoApp();
-        }
+        if (assertion) { entrarNoApp(); }
     } catch (e) {
         console.error("Biometria cancelada:", e);
-        // Se cancelar a digital, mostra os campos de senha de novo para a pessoa poder entrar
         document.getElementById("loginEmail").style.display = "block";
         document.getElementById("loginSenha").style.display = "block";
         document.getElementById("btnEntrar").style.display = "block";
@@ -214,15 +202,28 @@ function criarCaixa() {
     if(!n || !v) return;
     caixas.push({ nome: n, total: v, valores: gerarValores(v) });
     salvarNuvem();
+    
+    // NOTIFICAÇÃO 1: NOVA CAIXINHA
+    enviarNotificacao("📦 Nova Caixinha!", `O objetivo '${n}' no valor de R$ ${v} foi criado.`);
+    
     document.getElementById('nome').value = ""; document.getElementById('valor').value = "";
 }
+
 function abrirCaixa(i) { caixaAberta = i; renderCaixinhas(); }
 function voltarLista() { caixaAberta = null; renderCaixinhas(); }
+
 function marcarValor(i) { 
     caixas[caixaAberta].valores[i].ok = !caixas[caixaAberta].valores[i].ok;
     salvarNuvem();
+    
+    // NOTIFICAÇÃO 2: DINHEIRO GUARDADO (Só apita se a pessoa marcou o valor)
+    if (caixas[caixaAberta].valores[i].ok === true) {
+        enviarNotificacao("💰 Dinheiro Guardado!", "Um novo valor foi marcado na caixinha. Estamos mais perto da meta!");
+    }
+    
     if(caixas[caixaAberta].valores.every(v => v.ok)) { ui.confete.style.display = "flex"; setTimeout(()=>ui.confete.style.display="none", 3000); }
 }
+
 function deletarCaixa() { if(confirm("Apagar?")) { caixas.splice(caixaAberta, 1); caixaAberta = null; salvarNuvem(); } }
 
 /* ================= 5. LÓGICA AGENDA E NOTAS ================= */
@@ -289,6 +290,10 @@ function addAgenda() {
     
     agenda.push({ id: Date.now(), titulo: t, data: d, hora: h, dono: dono });
     salvarNuvem();
+    
+    // NOTIFICAÇÃO 3: NOVO COMPROMISSO
+    enviarNotificacao("📅 Novo Compromisso!", `Um compromisso de ${dono} foi marcado para ${formatarData(d)} às ${h}.`);
+    
     fecharModais(); 
     document.getElementById('agendaTitulo').value = ""; 
 }
@@ -301,8 +306,13 @@ function addNota() {
     if(!t) return;
     notas.unshift({ id: Date.now(), texto: t, feito: false });
     salvarNuvem();
+    
+    // NOTIFICAÇÃO 4: NOVA NOTA
+    enviarNotificacao("📝 Novo Recado", "Uma nova anotação foi salva no aplicativo.");
+    
     fecharModais(); document.getElementById('notaTexto').value = ""; 
 }
+
 function toggleNota(id) { const n = notas.find(x => x.id === id); if(n) { n.feito = !n.feito; salvarNuvem(); } }
 function excluirNota(id) { if(confirm("Apagar?")) { notas = notas.filter(x => x.id !== id); salvarNuvem(); } }
 function editarNota(id) { const n = notas.find(x => x.id === id); const novo = prompt("Editar:", n.texto); if(novo) { n.texto = novo; salvarNuvem(); } }
@@ -324,4 +334,32 @@ function agendarNativo(titulo, data, hora) {
     const inicio = data.replace(/-/g, "") + "T" + hora.replace(":", "") + "00";
     const fim = data.replace(/-/g, "") + "T" + (parseInt(hora.substring(0,2))+1).toString().padStart(2,'0') + hora.substring(3) + "00";
     if(confirm("Abrir calendário do celular?")) window.open(`https://www.google.com/calendar/render?action=TEMPLATE&text=${encodeURIComponent(titulo)}&dates=${inicio}/${fim}`, '_blank');
+}
+
+/* ================= 6. NOTIFICAÇÕES (ONESIGNAL) ================= */
+async function enviarNotificacao(titulo, mensagem) {
+    const appId = "9b555390-0b3d-448b-8461-2a7d79aec4b9";
+    const restApiKey = "os_v2_app_tnkvhealhvcixbdbfj6xtlwexfbt6zc4yrmutu56e5jmeoqldsqw2sbfimmgq5lj7yugqyejqhormt2c6zowpg7qryfp25uwuo5a7xq"; 
+
+    const url = "https://onesignal.com/api/v1/notifications";
+    const options = {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Basic ${restApiKey}`
+        },
+        body: JSON.stringify({
+            app_id: appId,
+            included_segments: ["All"], 
+            headings: { "en": titulo, "pt": titulo },
+            contents: { "en": mensagem, "pt": mensagem }
+        })
+    };
+
+    try {
+        await fetch("https://corsproxy.io/?" + url, options);
+        console.log("Notificação disparada com sucesso!");
+    } catch (e) {
+        console.error("Erro ao enviar a notificação:", e);
+    }
 }
