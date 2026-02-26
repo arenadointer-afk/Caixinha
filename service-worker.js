@@ -1,6 +1,4 @@
-importScripts("https://cdn.onesignal.com/sdks/web/v16/OneSignalSDK.sw.js");
-  
-const CACHE_NAME = "sutello";
+const CACHE_NAME = "Agenda-V1";
 const ASSETS = [
   "./",
   "./index.html",
