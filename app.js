@@ -335,7 +335,6 @@ function agendarNativo(titulo, data, hora) {
     const fim = data.replace(/-/g, "") + "T" + (parseInt(hora.substring(0,2))+1).toString().padStart(2,'0') + hora.substring(3) + "00";
     if(confirm("Abrir calendário do celular?")) window.open(`https://www.google.com/calendar/render?action=TEMPLATE&text=${encodeURIComponent(titulo)}&dates=${inicio}/${fim}`, '_blank');
 }
-
 /* ================= 6. NOTIFICAÇÕES (ONESIGNAL) ================= */
 async function enviarNotificacao(titulo, mensagem) {
     const appId = "9b555390-0b3d-448b-8461-2a7d79aec4b9";
@@ -350,16 +349,19 @@ async function enviarNotificacao(titulo, mensagem) {
         },
         body: JSON.stringify({
             app_id: appId,
-            included_segments: ["All"], 
+            // CORREÇÃO 1: O nome exato do grupo que o OneSignal exige
+            included_segments: ["Subscribed Users"], 
             headings: { "en": titulo, "pt": titulo },
             contents: { "en": mensagem, "pt": mensagem }
         })
     };
 
     try {
-        await fetch("https://corsproxy.io/?" + url, options);
+        // CORREÇÃO 2: Codificando o link para o proxy não se perder
+        await fetch("https://corsproxy.io/?" + encodeURIComponent(url), options);
         console.log("Notificação disparada com sucesso!");
     } catch (e) {
         console.error("Erro ao enviar a notificação:", e);
     }
 }
+
