@@ -1,4 +1,4 @@
-const CACHE_NAME = "versao-V1-Ok";
+const CACHE_NAME = "versao-V2-Ok";
 const ASSETS = [
   "./",
   "./index.html",
